@@ -13,7 +13,7 @@ The idea behind this project came from aalways texting myself or slacking myself
 
 ## TODO:
 
-###General
+### General
 	* Implement better data storage solution
 ### Slack
 	* Finish response implementation
