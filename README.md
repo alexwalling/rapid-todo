@@ -12,13 +12,14 @@ The idea behind this project came from aalways texting myself or slacking myself
 	I had heard and used Twilio in the past so it was a logical SMS API to use in my platform. I did some digging and it was pretty straight forward what I wanted to do, but RapidAPI didn't have "receiveSms" as part of their endpoints so I was going to have to get creative with my solution
 
 ## TODO:
-	### General
-		* Implement better data storage solution
-	### Slack
-		* Finish response implementation
-	### Email
-		* Everything
-	### SMS
-		* Receiving a message
-		* Storing a message
-		* Sending message WITH data from note/todo list
+
+###General
+	* Implement better data storage solution
+### Slack
+	* Finish response implementation
+### Email
+	* Everything
+### SMS
+	* Receiving a message
+	* Storing a message
+	* Sending message WITH data from note/todo list
