@@ -14,12 +14,12 @@ The idea behind this project came from aalways texting myself or slacking myself
 ## TODO:
 
 ### General
-[ ] Implement better data storage solution
+- [ ] Implement better data storage solution
 ### Slack
-[ ] Finish response implementation
+- [ ] Finish response implementation
 ### Email
-[ ] Everything
+- [ ] Everything
 ### SMS
-[ ] Receiving a message
-[ ] Storing a message
-[ ] Sending message WITH data from note/todo list
+- [ ] Receiving a message
+- [ ] Storing a message
+- [ ] Sending message WITH data from note/todo list
