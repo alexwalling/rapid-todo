@@ -1,6 +1,10 @@
 const RapidAPI = require('rapidapi-connect');
 const rapid = new RapidAPI("rapidapi-tutorial_5930670fe4b0eaefb644ce16", "99bde403-0d62-4088-b808-6d990e7babde");
 var fs = require('fs');
+var dotenv = require('dotenv');
+
+dotenv.load();
+
 var firstSpace = 0;
 var len = 0;
 var db = ['hello', 'I got your message', 'you did it!'];
@@ -15,6 +19,7 @@ rapid.listen('Slack', 'slashCommand', {
 		 /* YOUR CODE GOES HERE */ 
 	})
 	.on('message', (message) => {
+		console.log('env' + process.env.TOKEN);
 		console.log(message.text);
 		parseText(message.text, function(res) {
 			console.log(res);
@@ -47,27 +52,29 @@ function getNoteToPrint(cb){
 }
 
 function parseText(payload, cb) {
-	firstSpace = payload.indexOf(' ');
-	len = payload.length;
-	var message = payload.substring(firstSpace+1, len);
-	if(firstSpace == -1) {
-		if(payload == 'print'){
-			cb(3);
-			console.log('printing');
+	if(payload != undefined){
+		firstSpace = payload.indexOf(' ');
+		len = payload.length;
+		var message = payload.substring(firstSpace+1, len);
+		if(firstSpace == -1) {
+			if(payload == 'print'){
+				cb(3);
+				console.log('printing');
+			} else {
+				cb('invalid use of command');
+			}
 		} else {
-			cb('invalid use of command');
-		}
-	} else {
-		if(payload.substring(0,firstSpace) == 'add'){
-			cb(1);
-			//console.log(message);
-			console.log('adding')
-		} else if(payload.substring(0,firstSpace) == 'remove'){
-			cb(2);
-			console.log('removing');
-		} else if(payload.substring(0,firstSpace) == 'print'){
-			cb(3);
-			console.log('printing');
-		}
-	}	
+			if(payload.substring(0,firstSpace) == 'add'){
+				cb(1);
+				//console.log(message);
+				console.log('adding')
+			} else if(payload.substring(0,firstSpace) == 'remove'){
+				cb(2);
+				console.log('removing');
+			} else if(payload.substring(0,firstSpace) == 'print'){
+				cb(3);
+				console.log('printing');
+			}
+		}	
+	}
 }

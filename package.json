@@ -1,0 +1,25 @@
+{
+  "name": "rapid-todo",
+  "version": "1.0.0",
+  "description": "Simple todo list that you can text, email, or slack to add to todo list",
+  "main": "index.js",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "fs": "0.0.1-security",
+    "rapidapi-connect": "^0.0.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexwalling/rapid-todo.git"
+  },
+  "author": "Alex Walling",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alexwalling/rapid-todo/issues"
+  },
+  "homepage": "https://github.com/alexwalling/rapid-todo#readme"
+}

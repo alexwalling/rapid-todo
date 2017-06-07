@@ -1,12 +1,15 @@
 const RapidAPI = require('rapidapi-connect');
 const rapid = new RapidAPI("rapidapi-tutorial_5930670fe4b0eaefb644ce16", "99bde403-0d62-4088-b808-6d990e7babde");
+var dotenv = require('dotenv');
+
+dotenv.load();
 
 rapid.call('Twilio', 'sendSms', { 
 	'accountSid': process.env.SID,
 	'accountToken': process.env.TTOKEN,
 	'from': process.env.PHONE,
 	'messagingServiceSid': '',
-	'to': 'process.env.MYPHONE',
+	'to': process.env.MYPHONE,
 	'body': 'testing my app',
 	'statusCallback': '',
 	'applicationSid': '',
