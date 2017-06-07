@@ -15,11 +15,14 @@ The idea behind this project came from aalways texting myself or slacking myself
 
 ### General
 - [ ] Implement better data storage solution
+- [ ] Make a website for the notes
 ### Slack
+- [x] create slash command and link to a team
+- [x] Receive message and store in data
 - [ ] Finish response implementation
 ### Email
 - [ ] Everything
 ### SMS
 - [ ] Receiving a message
-- [ ] Storing a message
+- [ ] Storing a received message in to todo list
 - [ ] Sending message WITH data from note/todo list
