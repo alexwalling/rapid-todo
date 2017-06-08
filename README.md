@@ -9,17 +9,19 @@ Slack webhooks through RapidAPI allow for easy implementation of slash commands 
 Email isn't one that I actually use terribly often, but I figured it might be useful for someone to have and the goal of this project was to use a bunch of different APIs to familiarize myself with the RapidAPI platform. https://rapidapi.com/package/AmazonSES/functions/sendEmail
 
 ## Text
-_I had heard and used Twilio in the past so it was a logical SMS API to use in my platform. I did some digging and it was pretty straight forward what I wanted to do, but RapidAPI didn't have "receiveSms" as part of their endpoints so I was going to have to get creative with my solution
+I had heard and used Twilio in the past so it was a logical SMS API to use in my platform. I did some digging and it was pretty straight forward what I wanted to do, but RapidAPI didn't have "receiveSms" as part of their endpoints so I was going to have to get creative with my solution
 
 ## TODO:
 
 ### General
 - [ ] Implement better data storage solution
-- [ ] Make a website for the notes
+- [ ] Make a website for the todo list
 ### Slack
 - [x] create slash command and link to a team
 - [x] Receive message and store in data
-- [ ] Finish response implementation
+- [x] Finish response implementation
+- [ ] Implement deletion of items
+- [ ] Change what the slash command is. I'd like it to be like /todo and /done
 ### Email
 - [ ] Everything
 ### SMS
