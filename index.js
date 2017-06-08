@@ -6,9 +6,8 @@ var dotenv = require('dotenv');
 dotenv.load();
 
 var firstSpace = 0;
-var len = 0;
-var db = ['hello', 'I got your message', 'you did it!'];
 var n = 1;
+var db;
 
 rapid.listen('Slack', 'slashCommand', { 
 	'token': process.env.TOKEN,
@@ -37,6 +36,7 @@ rapid.listen('Slack', 'slashCommand', {
 				});
 			}
 		});
+		updateArray();
 	})
 	.on('error', (error) => {
 		console.log(error);
