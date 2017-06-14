@@ -5,6 +5,7 @@ const RapidAPI = require('rapidapi-connect');
 const rapid = new RapidAPI("rapidapi-tutorial_5930670fe4b0eaefb644ce16", "99bde403-0d62-4088-b808-6d990e7babde");
 var fs = require('fs');
 var dotenv = require('dotenv');
+var Promise = require('promise');
 
 /*
 loading dev environment for API keys
@@ -16,7 +17,7 @@ global variables
 */
 var firstSpace = 0;
 var n = 1;
-var db = ['hello\n', 'new phone\n', 'who dis\n'];
+var db = ['1) hello', '2) new phone', '3) who dis'];
 
 /*
 .listen for /command
@@ -43,8 +44,15 @@ rapid.listen('Slack', 'slashCommand', {
   					console.log('Saved!');
   					n++;
 				});
+
 			} else if(res == 2){
 				//remove the line number
+
+				removeLine(channel);
+				//.then(sampleFunction());
+				//remove line 
+				//return new Promise()
+
 			} else if(res == 3){
 				printNote(channel);
 			}
@@ -99,7 +107,8 @@ function getNoteToPrint(){
 	return 'hello';
 	*/
 
-	var text = fs.readFileSync('note.txt','utf8');
+	//var text = fs.readFileSync('note.txt','utf8');
+	var text = db.join('\n');
 	console.log(text);
 	return text;
 }
@@ -120,13 +129,21 @@ function parseText(payload, cb) {
 			if(payload == 'print'){
 				cb(3);
 				console.log('printing');
+			} if(payload == 'remove'){
+				cb(2);
+				console.log('removing');
 			} else {
 				cb('invalid use of command');
 			}
 		} else {
+			/*
+			conditions
+				1: add
+				2: remove
+				3: print
+			*/
 			if(payload.substring(0,firstSpace) == 'add'){
 				cb(1);
-				//console.log(message);
 				console.log('adding')
 			} else if(payload.substring(0,firstSpace) == 'remove'){
 				cb(2);
@@ -137,4 +154,19 @@ function parseText(payload, cb) {
 			}
 		}	
 	}
+}
+
+function removeLine(channel) {
+	/*
+	fs.readFileSync('note.txt', 'utf8', function(err, data) {
+    	if (err) {
+    		console.log(err);
+    	}
+    	var linesExceptFirst = data.split('\n').slice(2).join('\n');
+    	console.log('line ' + linesExceptFirst);
+    	fs.writeFileSync('note.txt', linesExceptFirst);
+	});
+	*/
+	db.splice(0, 1);
+	printNote(channel);
 }
