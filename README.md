@@ -14,12 +14,15 @@ I had heard and used Twilio in the past so it was a logical SMS API to use in my
 ## TODO:
 
 ### General
-- [ ] Implement better data storage solution (i.e. not text file)
-- [ ] Make a front end for the todo list
+- [x] Implement better data storage solution (i.e. not text file)
+- [x] Make a front end for the todo list
+- [ ] Combine the website and the slack slash commands
+- [ ] Use Socket.IO to auto update the website
 ### Slack
 - [x] create slash command and link to a team
 - [x] Receive message and store in data storage system(note.txt)
 - [x] Finish response implementation
+- [x] Implement completion of TODO items
 - [ ] Implement deletion of TODO items
 - [ ] Change what the slash command is. I'd like it to be like /todo and /done
 ### Email
