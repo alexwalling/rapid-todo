@@ -2,10 +2,27 @@
 required packages
 */
 const RapidAPI = require('rapidapi-connect');
-const rapid = new RapidAPI("rapidapi-tutorial_5930670fe4b0eaefb644ce16", "99bde403-0d62-4088-b808-6d990e7babde");
-var fs = require('fs');
+const rapid = new RapidAPI("default-application_5947e9b9e4b023d4b55e2d4b", "d2494848-1781-4a42-b9d3-c378074cc993");
 var dotenv = require('dotenv');
-var Promise = require('promise');
+//import { ajax } from 'jquery';
+
+const mongoose = require('mongoose');
+
+/*
+Connection to DB
+*/
+mongoose.connect('mongodb://<username>:<password>@ds123312.mlab.com:23312/rapid-todo');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function(){
+
+});
+var noteSchema = mongoose.Schema({
+	name: String,
+	content: String,
+	isDone: false
+});
+var Note = mongoose.model('Note', noteSchema);
 
 /*
 loading dev environment for API keys
@@ -16,8 +33,7 @@ dotenv.load();
 global variables
 */
 var firstSpace = 0;
-var n = 1;
-var db = ['1) hello', '2) new phone', '3) who dis'];
+var ids = [];
 
 /*
 .listen for /command
@@ -25,45 +41,59 @@ var db = ['1) hello', '2) new phone', '3) who dis'];
 rapid.listen('Slack', 'slashCommand', { 
 	'token': process.env.TOKEN,
 	'command': process.env.CMD,
-	'response': 'processing'
 })
-	.on('join', () => {
+.on('join', () => {
 
-	})
-	.on('message', (message) => {
-		var channel = message.channel_id;
-		// calls printNote to init slackbot to post current todo list in the same channel.
+})
+.on('message', (message) => {
+	var channel = message.channel_id;
+	parseText(message.text, function(res) {
+		if(res == 1){
+			addToDatabase(message.text.substring(firstSpace+1, len)).then(res => printNote(channel));
+		} else if(res == 2){
+			//remove the line number
+			console.log(ids);
+			number = parseInt(message.text.substring(firstSpace+1, len));
+			number -= 1;
+			markAsDone(number).then(res => printNote(channel));
+			
+			
 
-
-		//Logging to note txt -----------------------------------------------------------------------------------
-		parseText(message.text, function(res) {
-			console.log(res);
-			if(res == 1){
-				fs.appendFile('note.txt', n +') ' + message.text.substring(firstSpace+1, len) + '\n', function(err) {
-					if (err) throw err;
-  					console.log('Saved!');
-  					n++;
-				});
-
-			} else if(res == 2){
-				//remove the line number
-
-				removeLine(channel);
-				//.then(sampleFunction());
-				//remove line 
-				//return new Promise()
-
-			} else if(res == 3){
-				printNote(channel);
-			}
-		});
-	})
-	.on('error', (error) => {
-		console.log(error);
-	})
-	.on('close', (reason) => {
-
+		} else if(res == 3){
+			printNote(channel);
+		}
 	});
+})
+.on('error', (error) => {
+	console.log(error);
+})
+.on('close', (reason) => {
+
+});
+
+function markAsDone(number){
+	return new Promise((resolve, reject) => {
+		Note.findByIdAndUpdate(ids[number], {isDone:true}, function(err, result){
+		    if(err){
+		        console.log(err);
+		    }
+		    console.log("RESULT: " + result);
+		});
+		resolve('sucess');
+	});
+}
+
+function addToDatabase(text){
+	return new Promise((resolve, reject) => {
+		var Note1 = new Note ({
+			name: 'note4',
+			content: text,
+			isDone: false
+		});
+		Note1.save(function(err) {if(err) console.log('error on save')});
+		resolve('sucess');
+	});
+}
 
 /*
 prints current todo list to the same channel that the slash command was called
@@ -72,45 +102,58 @@ variables:
 	channel-name: either channel name or channel id
 */
 function printNote(channel_name){
-	rapid.call('Slack', 'postMessage', { 
-		'token': process.env.TOKEN2,
-		'channel': channel_name,
-		'text': getNoteToPrint(),
-		'parse': '',
-		'linkNames': '',
-		'attachments': '',
-		'unfurlLinks': '',
-		'unfurlMedia': '',
-		'username': 'Rapid Todo List',
-		'asUser': '',
-		'iconUrl': '',
-		'iconEmoji': ':raised_hands:'
+	getNoteToPrint().then((data) => {
+		rapid.call('Slack', 'postMessage', { 
+			'token': process.env.TOKEN2,
+			'channel': channel_name,
+			'text': data,
+			'parse': '',
+			'linkNames': '',
+			'attachments': '',
+			'unfurlLinks': '',
+			'unfurlMedia': '',
+			'username': 'Rapid Todo List',
+			'asUser': '',
+			'iconUrl': '',
+			'iconEmoji': ':raised_hands:'
 
-	}).on('success', (payload)=>{
+		}).on('success', (payload)=>{
 
-	}).on('error', (payload)=>{
+		}).on('error', (payload)=>{
 
-	});
+		});
+	});	
 }	
 
 /*
-reads text file to display the current todo list. 
+  Reads text file to display the current todo list. 
 */
 function getNoteToPrint(){
 	var res;
-	/*
-	fs.readFile('note.txt', 'utf8', function read(err, data) {
-		console.log(typeof data);
-		res = data;
-	});
-	console.log(res);
-	return 'hello';
-	*/
 
-	//var text = fs.readFileSync('note.txt','utf8');
-	var text = db.join('\n');
-	console.log(text);
-	return text;
+	var ret = '';
+	return new Promise((resolve, reject) => {
+		Note.find({}).exec(function(err, result) {
+			if(!err){
+				for(var key in result) {
+					ids.push(result[key]._id);
+					number = parseInt(key) + 1;
+					if(result[key].isDone){
+						ret += '~';
+					}
+					ret += number + ') ';
+	    			ret += result[key].content;
+	    			if(result[key].isDone){
+		    			ret += '~';
+	    			}
+	    			ret += '\n';
+				}
+				resolve(ret);
+			} else {
+				reject('does not work');
+			};
+		});
+	});
 }
 
 /*
@@ -128,10 +171,8 @@ function parseText(payload, cb) {
 		if(firstSpace == -1) {
 			if(payload == 'print'){
 				cb(3);
-				console.log('printing');
 			} if(payload == 'remove'){
 				cb(2);
-				console.log('removing');
 			} else {
 				cb('invalid use of command');
 			}
@@ -144,29 +185,15 @@ function parseText(payload, cb) {
 			*/
 			if(payload.substring(0,firstSpace) == 'add'){
 				cb(1);
-				console.log('adding')
 			} else if(payload.substring(0,firstSpace) == 'remove'){
 				cb(2);
-				console.log('removing');
 			} else if(payload.substring(0,firstSpace) == 'print'){
 				cb(3);
-				console.log('printing');
 			}
 		}	
 	}
 }
 
-function removeLine(channel) {
-	/*
-	fs.readFileSync('note.txt', 'utf8', function(err, data) {
-    	if (err) {
-    		console.log(err);
-    	}
-    	var linesExceptFirst = data.split('\n').slice(2).join('\n');
-    	console.log('line ' + linesExceptFirst);
-    	fs.writeFileSync('note.txt', linesExceptFirst);
-	});
-	*/
-	db.splice(0, 1);
+function removeLine(channel, number) {
 	printNote(channel);
 }
