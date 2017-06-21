@@ -4,6 +4,7 @@ node_modules/
 #environment variables
 *.env
 .env
+.sample-env
 
 *.txt
 
