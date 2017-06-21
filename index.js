@@ -11,7 +11,7 @@ const mongoose = require('mongoose');
 /*
 Connection to DB
 */
-mongoose.connect('mongodb://admin:dway1994@ds123312.mlab.com:23312/rapid-todo');
+mongoose.connect('mongodb://<user>:<pw>@ds123312.mlab.com:23312/rapid-todo');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function(){
